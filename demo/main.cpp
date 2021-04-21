@@ -13,9 +13,9 @@
 
 //RpcDigitalOut myled1(LED1,"myled1");
 
-RpcDigitalOut myled2(LED2,"myled2");
+DigitalOut myled2(LED2);
 
-RpcDigitalOut myled3(LED3,"myled3");
+DigitalOut myled3(LED3);
 
 BufferedSerial pc(USBTX, USBRX);
 
@@ -25,6 +25,11 @@ RPCFunction rpcLED(&LEDControl, "LEDControl");
 
 double x, y;
 
+void LEDBlink() {
+    if(x == 2) {
+
+    }
+}
 
 int main() {
 
@@ -33,20 +38,17 @@ int main() {
 
     // receive commands, and send back the responses
 
-    char buf1[256] = "/LEDControl/run 2 1\n",outbuf[256];
-    char buf2[256] = "/LEDControl/run 2 0\n";
-    char buf3[256] = "/LEDControl/run 3 1\n";
-    char buf4[256] = "/LEDControl/run 3 0\n";
+    char buf[256], outbuf[256];
 
 
-    //FILE *devin = fdopen(&pc, "r");
+    FILE *devin = fdopen(&pc, "r");
 
-    //FILE *devout = fdopen(&pc, "w");
+    FILE *devout = fdopen(&pc, "w");
 
 
     while(1) {
 
-        /*memset(buf, 0, 256);
+        memset(buf, 0, 256);
 
         for (int i = 0; ; i++) {
 
@@ -68,16 +70,7 @@ int main() {
 
         RPC::call(buf, outbuf);
 
-        printf("%s\r\n", outbuf);*/
-
-        RPC::call(buf1, outbuf);
-        ThisThread::sleep_for(500ms);
-        RPC::call(buf2, outbuf);
-        RPC::call(buf3, outbuf);
-        ThisThread::sleep_for(500ms);
-        RPC::call(buf4, outbuf);
-        
-
+        printf("%s\r\n", outbuf);
 
     }
 
@@ -88,18 +81,18 @@ int main() {
 
 void LEDControl (Arguments *in, Reply *out)   {
 
-    bool success = true;
+    //bool success = true;
 
 
     // In this scenario, when using RPC delimit the two arguments with a space.
 
-    x = in->getArg<double>();
+    //x = in->getArg<double>();
 
-    y = in->getArg<double>();
+    //y = in->getArg<double>();
 
 
     // Have code here to call another RPC function to wake up specific led or close it.
-
+/*
     char buffer[200], outbuf[256];
 
     char strings[20];
@@ -109,6 +102,7 @@ void LEDControl (Arguments *in, Reply *out)   {
     int on = y;
 
     sprintf(strings, "/myled%d/write %d", led, on);
+
 
     strcpy(buffer, strings);
 
@@ -123,5 +117,14 @@ void LEDControl (Arguments *in, Reply *out)   {
         out->putData("Failed to execute LED control.");
 
     }
-
+*/
+while(1)
+{
+    myled2 = 1;
+    ThisThread::sleep_for(500ms);
+    myled2 = 0;
+    myled3 = 1;
+    ThisThread::sleep_for(500ms);
+    myled3 = 0;
+}
 }
